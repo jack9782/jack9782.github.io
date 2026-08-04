@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>WebView Embed POC</title>
+    <script src="./config.js"></script>
+    <script>
+      (function () {
+        var base = (window.APP_CONFIG && window.APP_CONFIG.basePath) || "";
+        if (base) {
+          var el = document.createElement("base");
+          el.href = base;
+          document.head.insertBefore(el, document.head.firstChild);
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <p class="eyebrow">WebView embed POC</p>
+        <h1>Camera &amp; file capture</h1>
+        <p class="lede">
+          Four web flows for an Android WebView host: live camera,
+          <code>capture</code> input, gallery pick, and external browser links.
+        </p>
+      </header>
+
+      <section class="card" id="section-camera">
+        <h2>1. getUserMedia camera</h2>
+        <p class="hint">
+          Needs the host app to declare camera permission and grant WebView
+          media requests.
+        </p>
+        <div class="actions">
+          <button type="button" id="btn-camera-start">Open camera</button>
+          <button type="button" id="btn-camera-stop" disabled>Stop</button>
+        </div>
+        <video id="camera-preview" playsinline muted autoplay></video>
+        <pre id="camera-log" class="log" aria-live="polite"></pre>
+      </section>
+
+      <section class="card" id="section-capture">
+        <h2>2. File input + capture=environment</h2>
+        <p class="hint">
+          Prefers the rear camera via the system chooser. May fail silently if
+          the WebView does not implement file chooser / camera.
+        </p>
+        <div class="actions">
+          <button type="button" id="btn-capture">Take photo (capture)</button>
+        </div>
+        <input
+          id="input-capture"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          hidden
+        />
+        <img id="capture-preview" class="thumb" alt="" hidden />
+        <pre id="capture-log" class="log" aria-live="polite"></pre>
+      </section>
+
+      <section class="card" id="section-gallery">
+        <h2>3. File input (gallery / files)</h2>
+        <p class="hint">
+          No <code>capture</code> attribute — usually opens gallery or files
+          without camera permission.
+        </p>
+        <div class="actions">
+          <button type="button" id="btn-gallery">Choose image</button>
+        </div>
+        <input id="input-gallery" type="file" accept="image/*" hidden />
+        <img id="gallery-preview" class="thumb" alt="" hidden />
+        <pre id="gallery-log" class="log" aria-live="polite"></pre>
+      </section>
+
+      <section class="card" id="section-links">
+        <h2>4. Open external links</h2>
+        <p class="hint">
+          Host app should intercept these and open the system browser. Same-origin
+          navigations can stay in the WebView.
+        </p>
+        <div class="actions">
+          <a
+            id="link-blank"
+            class="button-link"
+            href="https://example.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            >target="_blank"</a
+          >
+          <button type="button" id="btn-window-open">window.open()</button>
+          <a id="link-same" class="button-link" href="./index.html"
+            >Same-page link</a
+          >
+        </div>
+        <pre id="links-log" class="log" aria-live="polite"></pre>
+      </section>
+
+      <footer class="footer">
+        <p id="env-info"></p>
+      </footer>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
