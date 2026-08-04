@@ -8,6 +8,6 @@
 //
 // Local static server at http://localhost:PORT/ → use ""
 window.APP_CONFIG = {
-  basePath: "/webapp-embed/",
-  externalDemoUrl: "https://example.com",
+  basePath: "/embed-web/",
+  externalDemoUrl: "https://jack9782.github.io",
 };
