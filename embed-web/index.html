@@ -27,8 +27,8 @@
         <h1>Camera &amp; file capture</h1>
         <p class="lede">
           Web flows for an Android WebView host: live camera,
-          <code>capture</code> input, gallery pick, QR scan, and external
-          browser links.
+          <code>capture</code> input, gallery pick, live QR scan, file QR
+          decode, and external browser links.
         </p>
       </header>
 
@@ -116,6 +116,43 @@
           >
         </div>
         <pre id="links-log" class="log" aria-live="polite"></pre>
+      </section>
+
+      <section class="card" id="section-file-qr">
+        <h2>5. File QR → open links</h2>
+        <p class="hint">
+          Pick an image from gallery/files (no camera), decode a QR URL, then
+          open it via the actions below. Host app should intercept external URLs
+          and open the system browser.
+        </p>
+        <div class="actions">
+          <button type="button" id="btn-file-qr">Choose QR image</button>
+        </div>
+        <input id="input-file-qr" type="file" accept="image/*" hidden />
+        <div id="file-qr-reader" hidden></div>
+        <img id="file-qr-preview" class="thumb" alt="" hidden />
+        <p id="file-qr-result" class="qr-result" hidden>
+          Decoded:
+          <a
+            id="file-qr-result-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          ></a>
+        </p>
+        <div class="actions">
+          <a
+            id="file-link-blank"
+            class="button-link"
+            href="https://example.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            >target="_blank"</a
+          >
+          <button type="button" id="btn-file-window-open">window.open()</button>
+          <a id="file-link-same" class="button-link" href="#">Same-page link</a>
+        </div>
+        <pre id="file-qr-log" class="log" aria-live="polite"></pre>
       </section>
 
       <footer class="footer">

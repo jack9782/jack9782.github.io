@@ -298,6 +298,111 @@ $(function () {
     setLog($linksLog, "Clicked scanned result link → " + activeUrl);
   });
 
+  // --- 5. File QR → open links ---
+  let fileQrActiveUrl = config.externalDemoUrl || "https://example.com";
+  const inputFileQr = $("#input-file-qr")[0];
+  const $fileQrLog = $("#file-qr-log");
+  const $fileQrPreview = $("#file-qr-preview");
+  const $fileLinkBlank = $("#file-link-blank");
+
+  function setFileQrActiveUrl(url) {
+    fileQrActiveUrl = url;
+    $fileLinkBlank.attr("href", url);
+    $("#file-link-same").attr("href", url);
+    $("#file-qr-result-link").attr("href", url).text(url);
+    $("#file-qr-result").prop("hidden", false);
+  }
+
+  $fileLinkBlank.attr("href", fileQrActiveUrl);
+  $("#file-link-same").attr("href", fileQrActiveUrl);
+
+  $("#btn-file-qr").on("click", async function () {
+    setLog($fileQrLog, "Opening gallery / files for QR image…");
+    try {
+      var file = await openFileInput(inputFileQr);
+      showThumb($fileQrPreview, file);
+      if (!file) {
+        setLog($fileQrLog, describeFile(file), true);
+        return;
+      }
+      if (typeof Html5Qrcode === "undefined") {
+        setLog($fileQrLog, "html5-qrcode library failed to load.", true);
+        return;
+      }
+      setLog($fileQrLog, describeFile(file) + "\nDecoding QR…");
+      var scanner = new Html5Qrcode("file-qr-reader");
+      try {
+        var decodedText = await scanner.scanFile(file, false);
+        var text = (decodedText || "").trim();
+        if (!isAbsoluteUrl(text)) {
+          setLog(
+            $fileQrLog,
+            "QR detected but not an http(s) URL: " + text,
+            true
+          );
+          return;
+        }
+        setFileQrActiveUrl(text);
+        setLog(
+          $fileQrLog,
+          "QR URL decoded from file. Use open actions below.\n" + text
+        );
+      } finally {
+        try {
+          scanner.clear();
+        } catch (clearErr) {
+          // ignore
+        }
+      }
+    } catch (err) {
+      showThumb($fileQrPreview, null);
+      if (err && err.message === "FILE_CHOOSER_UNAVAILABLE") {
+        setLog(
+          $fileQrLog,
+          "Chooser did not open. Host WebView may be missing onShowFileChooser.",
+          true
+        );
+      } else {
+        setLog(
+          $fileQrLog,
+          "QR decode failed — " + (typeof err === "string" ? err : formatError(err)),
+          true
+        );
+      }
+    }
+  });
+
+  $("#btn-file-window-open").on("click", function () {
+    setLog($fileQrLog, "Calling window.open(" + fileQrActiveUrl + ")");
+    var w = window.open(fileQrActiveUrl, "_blank");
+    if (!w) {
+      setLog(
+        $fileQrLog,
+        "window.open returned null/blocked. Host must handle _blank / external URLs.",
+        true
+      );
+    } else {
+      setLog(
+        $fileQrLog,
+        "window.open accepted (may still be in-app depending on host)."
+      );
+    }
+  });
+
+  $fileLinkBlank.on("click", function () {
+    setLog($fileQrLog, "Clicked target=_blank → " + fileQrActiveUrl);
+  });
+
+  $("#file-link-same").on("click", function (e) {
+    e.preventDefault();
+    setLog($fileQrLog, "Same-page navigation → " + fileQrActiveUrl);
+    window.location.assign(fileQrActiveUrl);
+  });
+
+  $("#file-qr-result-link").on("click", function () {
+    setLog($fileQrLog, "Clicked decoded result link → " + fileQrActiveUrl);
+  });
+
   // Env banner
   $("#env-info").text(
     "UA: " +

@@ -157,6 +157,10 @@ button:not(:disabled):active,
   color: var(--accent);
 }
 
+#file-qr-reader {
+  display: none;
+}
+
 .thumb {
   display: block;
   width: 100%;
