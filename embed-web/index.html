@@ -26,8 +26,9 @@
         <p class="eyebrow">WebView embed POC</p>
         <h1>Camera &amp; file capture</h1>
         <p class="lede">
-          Four web flows for an Android WebView host: live camera,
-          <code>capture</code> input, gallery pick, and external browser links.
+          Web flows for an Android WebView host: live camera,
+          <code>capture</code> input, gallery pick, QR scan, and external
+          browser links.
         </p>
       </header>
 
@@ -82,8 +83,23 @@
       <section class="card" id="section-links">
         <h2>4. Open external links</h2>
         <p class="hint">
-          Host app should intercept these and open the system browser. Same-origin
+          Scan a QR code for a URL, then open it via the actions below. Host app
+          should intercept external URLs and open the system browser; same-origin
           navigations can stay in the WebView.
+        </p>
+        <div class="actions">
+          <button type="button" id="btn-qr-start">Scan QR</button>
+          <button type="button" id="btn-qr-stop" disabled>Stop scan</button>
+        </div>
+        <div id="qr-reader" class="qr-reader" hidden></div>
+        <p id="qr-result" class="qr-result" hidden>
+          Scanned:
+          <a
+            id="qr-result-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          ></a>
         </p>
         <div class="actions">
           <a
@@ -95,7 +111,7 @@
             >target="_blank"</a
           >
           <button type="button" id="btn-window-open">window.open()</button>
-          <a id="link-same" class="button-link" href="./index.html"
+          <a id="link-same" class="button-link" href="#"
             >Same-page link</a
           >
         </div>
@@ -106,6 +122,8 @@
         <p id="env-info"></p>
       </footer>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
